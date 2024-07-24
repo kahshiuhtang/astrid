@@ -8,7 +8,12 @@ Knowledge-base software
 2. Privledged spaces and documents
 3. Fast and powerful document search with easy querying
 4. Self-hosting
-5. LLM integration
+
+## To Run
+
+```bash
+make all
+```
 
 #### Smaller ideas
 

@@ -14,6 +14,13 @@ func (s *Set[T]) Add(element T) {
 func (s *Set[T]) Remove(element T) {
 	delete(s.elements, element)
 }
+func (s *Set[T]) GetAll() []T {
+	setContents := make([]T, 0, len(s.elements))
+	for key := range s.elements {
+		setContents = append(setContents, key)
+	}
+	return setContents
+}
 
 func (s *Set[T]) Contains(element T) bool {
 	_, exists := s.elements[element]

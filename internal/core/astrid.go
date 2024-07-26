@@ -9,8 +9,11 @@ type Astrid struct {
 	Analyzer  analysis.Analyzer
 	Tokenizer analysis.Tokenizer
 	Index     index.InvertedIndex
+	Documents []analysis.Document
 }
 
-func (a *Astrid) Initialize() {
-
+func CreateAstrid() Astrid {
+	return Astrid{
+		Documents: make([]analysis.Document, 0),
+	}
 }

@@ -11,6 +11,11 @@ Engine for searching through documentation, related files, messages and tickets
 3. Fast and powerful document search with easy querying
 4. Self-hosting
 
+## Dependencies
+
+1. make
+2. Go 1.20+
+
 ## To Run
 
 ```bash

@@ -2,7 +2,6 @@ package index
 
 import (
 	"errors"
-	"log"
 
 	"github.com/kahshiuhtang/astrid/internal/core/analysis"
 	"github.com/kahshiuhtang/astrid/internal/modules/util"
@@ -25,6 +24,7 @@ func InitInvertedIndex() InvertedIndex {
 	return res
 }
 
+// Probably need a dedicated tokenizer
 func (ind *InvertedIndex) AddDocument(currentDocument *analysis.Document) error {
 	if currentDocument == nil || currentDocument.TokenizedStringForm == nil {
 		return errors.New("AddDocument(): currentDocument is not specified")
@@ -33,7 +33,7 @@ func (ind *InvertedIndex) AddDocument(currentDocument *analysis.Document) error 
 		if _, exists := ind.PostingsList[word]; exists {
 			set, exists := ind.PostingsList[word]
 			if !exists {
-				log.Fatal("AddDocument(): set does not exist when it has been crea")
+				return errors.New("AddDocument(): set does not exist when it has been crea")
 			}
 			set.Add(currentDocument.Id)
 			ind.TermCount[ind.TermDictionary[word]] += 1
@@ -45,6 +45,8 @@ func (ind *InvertedIndex) AddDocument(currentDocument *analysis.Document) error 
 			ind.TermCount[ind.CurrentTermCount] = 1
 			ind.CurrentTermCount += 1
 		}
+		currentDocument.TermCount[word]++
+		currentDocument.TotalTerms += 1
 	}
 	return nil
 }

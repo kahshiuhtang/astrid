@@ -19,9 +19,22 @@ type Document struct {
 	Filepath            string
 	Fields              []Field
 	TokenizedStringForm []string
+	TermCount           map[string]int
+	TotalTerms          int
 	Id                  int
 }
 type Analyzer struct {
+}
+
+func CreateDocument(filePath string, id int) Document {
+	return Document{
+		Filepath:            filePath,
+		Fields:              make([]Field, 0),
+		TokenizedStringForm: make([]string, 0),
+		TermCount:           make(map[string]int, 0),
+		TotalTerms:          0,
+		Id:                  id,
+	}
 }
 
 func (a *Analyzer) LoadDocument(currentDocument *Document) (string, error) {
@@ -41,7 +54,7 @@ func (a *Analyzer) Tokenize(fileContent string) []string {
 	var currentWord []rune
 
 	for _, r := range fileContent {
-		if unicode.IsSpace(r) {
+		if unicode.IsSpace(r) || !unicode.IsLetter(r) {
 			if len(currentWord) > 0 {
 				words = append(words, string(currentWord))
 				currentWord = nil

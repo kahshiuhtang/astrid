@@ -1,6 +1,8 @@
-# AssistVault
+# Astrid
 
-Knowledge-base software
+Enterprise Search Engine
+
+Engine for searching through documentation, related files, messages and tickets
 
 ## Main Features
 

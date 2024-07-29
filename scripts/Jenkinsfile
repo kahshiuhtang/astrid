@@ -3,10 +3,6 @@ pipeline {
     tools {
         go '1.19'
     }
-    environment {
-        GO122MODULE = 'on'
-        CGO_ENABLED = 0 
-    }
     stages{
         stage('Pre Test'){
             steps{

@@ -4,10 +4,11 @@ pipeline {
         go 'go-1.22.3'
     }
     stages{
-        stage('Pre Test'){
+        stage('Setup'){
             steps{
                 echo 'Pulling Dependencies'
-    
+                sh 'apt-get update -y'
+                sh 'apt-get install -y git build-essential gcc cmake make'
                 sh 'go version'
                 sh 'curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.59.1'
             }

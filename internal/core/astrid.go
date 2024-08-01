@@ -9,7 +9,7 @@ import (
 )
 
 type Astrid struct {
-	Analyzer       analysis.Analyzer
+	Parser         analysis.Parser
 	Tokenizer      analysis.Tokenizer
 	Index          index.InvertedIndex
 	Documents      map[int]analysis.Document
@@ -18,7 +18,7 @@ type Astrid struct {
 
 func CreateAstrid() Astrid {
 	return Astrid{
-		Analyzer:       analysis.Analyzer{},
+		Parser:         analysis.Parser{},
 		Tokenizer:      analysis.Tokenizer{},
 		Index:          index.InitInvertedIndex(),
 		Documents:      make(map[int]analysis.Document, 0),
@@ -28,7 +28,6 @@ func CreateAstrid() Astrid {
 
 func (a *Astrid) CreateDocument(filePath string) *analysis.Document {
 	newDoc := analysis.Document{
-		Filepath:            filePath,
 		Fields:              make(map[string]analysis.Field, 0),
 		TokenizedStringForm: make([]string, 0),
 		TermCount:           make(map[string]int, 0),

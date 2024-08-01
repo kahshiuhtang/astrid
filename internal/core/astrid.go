@@ -18,15 +18,18 @@ type Astrid struct {
 
 func CreateAstrid() Astrid {
 	return Astrid{
+		Analyzer:       analysis.Analyzer{},
+		Tokenizer:      analysis.Tokenizer{},
+		Index:          index.InitInvertedIndex(),
 		Documents:      make(map[int]analysis.Document, 0),
 		NextDocumentId: 0,
 	}
 }
 
-func (a *Astrid) AddDocument(filePath string) {
+func (a *Astrid) CreateDocument(filePath string) *analysis.Document {
 	newDoc := analysis.Document{
 		Filepath:            filePath,
-		Fields:              make([]analysis.Field, 0),
+		Fields:              make(map[string]analysis.Field, 0),
 		TokenizedStringForm: make([]string, 0),
 		TermCount:           make(map[string]int, 0),
 		TotalTerms:          0,
@@ -34,6 +37,7 @@ func (a *Astrid) AddDocument(filePath string) {
 	}
 	a.Documents[a.NextDocumentId] = newDoc
 	a.NextDocumentId += 1
+	return &newDoc
 }
 
 func (a *Astrid) Tf(docId int, term string) (float64, error) {

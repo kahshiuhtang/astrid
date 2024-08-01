@@ -17,7 +17,7 @@ type Field struct {
 }
 type Document struct {
 	Filepath            string
-	Fields              []Field
+	Fields              map[string]Field
 	TokenizedStringForm []string
 	TermCount           map[string]int
 	TotalTerms          int
@@ -26,18 +26,7 @@ type Document struct {
 type Analyzer struct {
 }
 
-func CreateDocument(filePath string, id int) Document {
-	return Document{
-		Filepath:            filePath,
-		Fields:              make([]Field, 0),
-		TokenizedStringForm: make([]string, 0),
-		TermCount:           make(map[string]int, 0),
-		TotalTerms:          0,
-		Id:                  id,
-	}
-}
-
-func (a *Analyzer) LoadDocument(currentDocument *Document) (string, error) {
+func (a *Analyzer) LoadFile(currentDocument *Document) (string, error) {
 	if currentDocument == nil || currentDocument.Filepath == "" {
 		return "", errors.New("LoadDocument(): currentDocument is not specified")
 	}
@@ -49,22 +38,45 @@ func (a *Analyzer) LoadDocument(currentDocument *Document) (string, error) {
 	return fileContent, nil
 }
 
-func (a *Analyzer) Tokenize(fileContent string) []string {
+func (a *Analyzer) Tokenize(fieldContent string) ([]string, []Token) {
 	var words []string
 	var currentWord []rune
-
-	for _, r := range fileContent {
+	var tokens = make([]Token, 0)
+	var currentIndex = 0
+	var currentWords = 1
+	var wordStart = 0
+	for _, r := range fieldContent {
 		if unicode.IsSpace(r) || !unicode.IsLetter(r) {
 			if len(currentWord) > 0 {
 				words = append(words, string(currentWord))
 				currentWord = nil
+				newToken := Token{
+					Term:     string(currentWord),
+					Position: currentWords,
+					Offset:   wordStart,
+					Length:   len(string(currentWord)),
+				}
+				currentWords += 1
+				wordStart = -1
+				tokens = append(tokens, newToken)
 			}
 		} else {
 			currentWord = append(currentWord, r)
+			if wordStart == -1 {
+				wordStart = currentIndex
+			}
 		}
+		currentIndex += 1
 	}
 	if len(currentWord) > 0 {
 		words = append(words, string(currentWord))
+		newToken := Token{
+			Term:     string(currentWord),
+			Position: currentWords,
+			Offset:   wordStart,
+			Length:   len(string(currentWord)),
+		}
+		tokens = append(tokens, newToken)
 	}
-	return words
+	return words, tokens
 }

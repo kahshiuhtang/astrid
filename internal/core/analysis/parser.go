@@ -12,12 +12,16 @@ import (
 type Field struct {
 	TermString string
 }
+type MetaData struct {
+	OtherInformation map[string]string
+}
 type Document struct {
 	Fields              map[string]Field
 	TokenizedStringForm []string
 	TermCount           map[string]int
 	TotalTerms          int
 	Id                  int
+	MetaData            MetaData
 }
 type Parser struct {
 	Content        string
@@ -33,12 +37,17 @@ func CreateParser(fileContent string) Parser {
 	}
 }
 func (d *Parser) Run() {
-	// remove punctuation
-	//
+	d.RemovePunctuation()
+	d.RemoveDiatrics()
 }
 func (d *Parser) RemovePunctuation() {
-	// remove punctuation
-	//
+	var result []rune
+	for _, r := range d.Content {
+		if !unicode.IsPunct(r) {
+			result = append(result, r)
+		}
+	}
+	d.Content = string(result)
 }
 func (d *Parser) ConvertToLowercase() {
 	d.Content = strings.ToLower(d.Content)

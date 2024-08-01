@@ -32,6 +32,12 @@ make all
 
 2. How to search when you don't know the words?
 
-## Inspiration
+## Useful Documentation
 
-1. Apache Lucene
+1. (https://datawarrior.medium.com/building-a-search-engine-lucene-tutorial-a515e3bfb44b)
+
+2. (https://j.blaszyk.me/tech-blog/exploring-apache-lucene-index/)
+
+3. (https://en.wikipedia.org/wiki/PageRank)
+
+4. (https://stackoverflow.com/questions/2602253/how-does-lucene-index-documents)

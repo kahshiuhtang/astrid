@@ -49,6 +49,10 @@ func (d *Parser) RemovePunctuation() {
 	}
 	d.Content = string(result)
 }
+func (d *Parser) ApplyStemming() {
+}
+func (d *Parser) ApplyLemmatization() {
+}
 func (d *Parser) ConvertToLowercase() {
 	d.Content = strings.ToLower(d.Content)
 }

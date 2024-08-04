@@ -1,5 +1,9 @@
 package search
 
+import (
+	"github.com/kahshiuhtang/astrid/internal/core/index"
+)
+
 type Comparator int
 type QueryType int
 type SearchType int
@@ -45,5 +49,10 @@ type Query struct {
 }
 
 func ParseQuery(query string) {
+	// Todo: Use a parse and goyacc
+}
 
+func (q *Query) Execute(index *index.InvertedIndex) {
+	if q.Type == TERM {
+	}
 }

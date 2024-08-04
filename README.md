@@ -15,16 +15,20 @@ Engine for searching through documentation, related files, messages and tickets
 
 1. make
 2. Go 1.20+
+3. goyacc
 
 ## To Run
 
 ```bash
+sudo apt install golang-golang-x-tools
 make all
 ```
 
 #### Smaller ideas
 
-- Link articles and have those articles be searchable
+-   Link articles and have those articles be searchable
+
+-   Track the history of search queries
 
 ## Problems
 

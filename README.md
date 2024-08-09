@@ -36,6 +36,12 @@ make all
 
 2. How to search when you don't know the words?
 
+3. How to understand user behavior?
+
+4. How to structure data that has no structure?
+
+5. How to generate metadata?
+
 ## Useful Documentation
 
 1. (https://datawarrior.medium.com/building-a-search-engine-lucene-tutorial-a515e3bfb44b)

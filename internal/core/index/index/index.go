@@ -3,7 +3,7 @@ package index
 import (
 	"errors"
 
-	"github.com/kahshiuhtang/astrid/internal/core/analysis"
+	"github.com/kahshiuhtang/astrid/internal/core/index/analysis"
 	"github.com/kahshiuhtang/astrid/internal/modules/util"
 )
 

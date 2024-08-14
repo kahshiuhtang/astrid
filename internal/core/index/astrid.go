@@ -8,8 +8,8 @@ import (
 	"strconv"
 
 	"github.com/huandu/skiplist"
-	"github.com/kahshiuhtang/astrid/internal/core/analysis"
-	"github.com/kahshiuhtang/astrid/internal/core/index"
+	"github.com/kahshiuhtang/astrid/internal/core/index/analysis"
+	"github.com/kahshiuhtang/astrid/internal/core/index/index"
 	"github.com/kahshiuhtang/astrid/internal/modules/util"
 )
 

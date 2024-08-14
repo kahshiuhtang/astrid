@@ -1,7 +1,7 @@
 package search
 
 import (
-	"github.com/kahshiuhtang/astrid/internal/core/index"
+	"github.com/kahshiuhtang/astrid/internal/core/index/index"
 )
 
 type Comparator int

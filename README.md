@@ -1,15 +1,22 @@
-# Astrid
+# AstridFS
 
-Enterprise Search Engine
+AstridFS is a distributed enterprise file system that supports strong search capabilities, knowledge base generation, and diverse data ingestion
 
-Engine for searching through documentation, related files, messages and tickets
+In summary, it is an engine for searching through documentation, related files, messages and tickets
 
-## Main Features
+## Key Objectives:
 
-1. Beautiful document creation
-2. Privileged spaces and documents
-3. Fast and powerful document search with easy querying
-4. Self-hosting
+Enhance File Management: Implement a scalable, secure, and fault-tolerant distributed file system that simplifies file storage, retrieval, and collaboration across the enterprise.
+
+Improve Information Discovery: Develop a powerful custom search engine that enables users to quickly find relevant information through advanced search capabilities and personalized results.
+
+Automate Knowledge Extraction: Create an intelligent knowledge base system that automatically aggregates, categorizes, and connects information from various files and documents.
+
+Ensure Data Security: Implement robust security measures, including granular access controls, encryption, and comprehensive audit trails to protect sensitive information.
+
+Boost Productivity: Provide intuitive user interfaces and integrations that streamline workflows and reduce time spent on file management and information retrieval tasks.
+
+Enable Data-Driven Insights: Offer analytics and reporting tools that provide valuable insights into file usage, search patterns, and knowledge trends within the organization.
 
 ## Dependencies
 

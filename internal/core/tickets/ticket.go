@@ -26,9 +26,17 @@ const (
 	Closed
 )
 
+type TicketStateChange struct {
+	TicketStateChangeId string
+	TicketId            string
+	TicketFieldChange   string
+	FieldOldValue       string
+	Message             string
+}
 type Ticket struct {
 	TicketId     string
 	Subject      string
+	Description  string
 	StartDate    time.Time
 	LastChanged  time.Time
 	Team         string
@@ -39,4 +47,15 @@ type Ticket struct {
 	Keywords     []string
 	Criticality  CriticalityType
 	Type         TicketType
+}
+
+func CreateTicket() {
+
+}
+func SaveTicket() {
+
+}
+
+func UpdateTicket() {
+
 }

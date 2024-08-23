@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Table } from "@radix-ui/themes";
+export default function App() {
+    return (
+        <Table.Root>
+            <Table.Header>
+                <Table.Row>
+                    <Table.ColumnHeaderCell>Full name</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell>Email</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell>Group</Table.ColumnHeaderCell>
+                </Table.Row>
+            </Table.Header>
 
-function App() {
-  const [count, setCount] = useState(0)
+            <Table.Body>
+                <Table.Row>
+                    <Table.RowHeaderCell>Danilo Sousa</Table.RowHeaderCell>
+                    <Table.Cell>danilo@example.com</Table.Cell>
+                    <Table.Cell>Developer</Table.Cell>
+                </Table.Row>
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+                <Table.Row>
+                    <Table.RowHeaderCell>Zahra Ambessa</Table.RowHeaderCell>
+                    <Table.Cell>zahra@example.com</Table.Cell>
+                    <Table.Cell>Admin</Table.Cell>
+                </Table.Row>
+
+                <Table.Row>
+                    <Table.RowHeaderCell>Jasper Eriksson</Table.RowHeaderCell>
+                    <Table.Cell>jasper@example.com</Table.Cell>
+                    <Table.Cell>Developer</Table.Cell>
+                </Table.Row>
+            </Table.Body>
+        </Table.Root>
+    );
 }
-
-export default App

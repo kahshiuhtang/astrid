@@ -3,6 +3,10 @@ package client
 type SearchClient struct {
 }
 type StorageClient struct {
+	// storage server
+	// know what files we are storing
+	// sync time
+	// any pending changes to sync
 }
 
 func (sc *StorageClient) ConnectToServer() {

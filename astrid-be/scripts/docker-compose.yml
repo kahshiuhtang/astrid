@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # Meilisearch
+  meilisearch:
+    image: getmeili/meilisearch:v1.1
+    container_name: meilisearch
+    ports:
+      - "7700:7700"
+    volumes:
+      - ./meili_data:/meili_data
+    environment:
+      MEILI_MASTER_KEY: "masterKey"
+    restart: always
+
+  # Syncthing
+  syncthing:
+    image: syncthing/syncthing
+    container_name: syncthing
+    hostname: my-syncthing
+    environment:
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - 8384:8384 # Web UI
+      - 22000:22000/tcp # TCP file transfers
+      - 22000:22000/udp # QUIC file transfers
+      - 21027:21027/udp # Receive local discovery broadcasts
+    restart: unless-stopped
+
+  # SeaweedFS Master
+  seaweedfs_master:
+    image: chrislusf/seaweedfs:latest
+    container_name: seaweedfs_master
+    command: 'master'
+    ports:
+      - "9333:9333"
+    volumes:
+      - ./seaweedfs_data/master:/data
+    restart: always
+
+  # SeaweedFS Volume Server
+  seaweedfs_volume:
+    image: chrislusf/seaweedfs:latest
+    container_name: seaweedfs_volume
+    command: 'volume -max=5 -mserver="seaweedfs_master:9333"'
+    ports:
+      - "8080:8080"
+      - "18080:18080"
+    volumes:
+      - ./seaweedfs_data/volume:/data
+    depends_on:
+      - seaweedfs_master
+    restart: always
+
+  # PostgreSQL
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  # MongoDB
+  mongodb:
+    image: mongo:6
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: mydb
+    ports:
+      - "27018:27017"
+    volumes:
+      - ./mongo_data:/data/db
+    restart: always

@@ -1,3 +1,3 @@
 # Astrid
 
-Datastore Manager
+Data storage manager with API generation

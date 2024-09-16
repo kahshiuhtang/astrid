@@ -1,21 +1,31 @@
 package main
 
 import (
-	"cmp"
 	"fmt"
+	"log"
 	"net/http"
-	"os"
+
+	"github.com/gorilla/mux"
+	api "github.com/kahshiuhtang/astrid-fs/internal/api"
 )
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello, World!")
+// Middleware to log each request
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Received request: %s %s", r.Method, r.RequestURI)
+		next.ServeHTTP(w, r)
+	})
 }
 
+// Set up routes and middleware
 func main() {
-	http.HandleFunc("/", helloHandler)
-	fmt.Println("Server is listening on port 3000...")
-	err := http.ListenAndServe(":"+cmp.Or(os.Getenv("PORT"), "3000"), nil)
-	if err != nil {
-		fmt.Println("Error starting server:", err)
-	}
+	router := mux.NewRouter()
+
+	// Add logging middleware
+	router.Use(loggingMiddleware)
+	api.SetupDateDigestRoutes(router)
+	// Start the server
+	port := ":6789"
+	fmt.Printf("Server is running on port %s\n", port)
+	log.Fatal(http.ListenAndServe(port, router))
 }

@@ -12,71 +12,35 @@ services:
     environment:
       MEILI_MASTER_KEY: "masterKey"
     restart: always
-
-  # Syncthing
-  syncthing:
-    image: syncthing/syncthing
-    container_name: syncthing
-    hostname: my-syncthing
-    environment:
-      - PUID=1000
-      - PGID=1000
+  master:
+    image: chrislusf/seaweedfs:latest
+    command: ["master"]
     ports:
-      - 8384:8384 # Web UI
-      - 22000:22000/tcp # TCP file transfers
-      - 22000:22000/udp # QUIC file transfers
-      - 21027:21027/udp # Receive local discovery broadcasts
+      - "9333:9333"  # Expose master server port
+    volumes:
+      - ./master:/data  # Volume for master data
     restart: unless-stopped
 
-  # SeaweedFS Master
-  seaweedfs_master:
+  # Volume Server 1
+  volume1:
     image: chrislusf/seaweedfs:latest
-    container_name: seaweedfs_master
-    command: 'master'
+    command: ["volume", "-dir", "/data", "-max", "5", "-mserver", "master:9333", "-port", "8080"]
     ports:
-      - "9333:9333"
+      - "8080:8080"  # Expose volume server 1 port
     volumes:
-      - ./seaweedfs_data/master:/data
-    restart: always
-
-  # SeaweedFS Volume Server
-  seaweedfs_volume:
-    image: chrislusf/seaweedfs:latest
-    container_name: seaweedfs_volume
-    command: 'volume -max=5 -mserver="seaweedfs_master:9333"'
-    ports:
-      - "8080:8080"
-      - "18080:18080"
-    volumes:
-      - ./seaweedfs_data/volume:/data
+      - ./volume1:/data  # Volume for storing volume server 1 data
+    restart: unless-stopped
     depends_on:
-      - seaweedfs_master
-    restart: always
+      - master
 
-  # PostgreSQL
-  postgres:
-    image: postgres:15
-    container_name: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydb
+  # Volume Server 2
+  volume2:
+    image: chrislusf/seaweedfs:latest
+    command: ["volume", "-dir", "/data", "-max", "10", "-mserver", "master:9333", "-port", "8081"]
     ports:
-      - "5432:5432"
+      - "8081:8081"  # Expose volume server 2 port
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
-    restart: always
-
-  # MongoDB
-  mongodb:
-    image: mongo:6
-    container_name: mongodb
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: mydb
-    ports:
-      - "27018:27017"
-    volumes:
-      - ./mongo_data:/data/db
-    restart: always
+      - ./volume2:/data  # Volume for storing volume server 2 data
+    restart: unless-stopped
+    depends_on:
+      - master

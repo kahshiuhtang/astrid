@@ -38,8 +38,6 @@ func RetrieveENVFile() {
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
-
-	// Fetch values from environment and assign them to constants
 	user = os.Getenv(dbUserENV)
 	password = os.Getenv(dbPasswordENV)
 	dbname = os.Getenv(dbNameENV)
@@ -56,7 +54,7 @@ func ConvertStringToInt(str string) int {
 	}
 	return num
 }
-func ConnectPostgres() {
+func ConnectPostgres() *sql.DB {
 	if !openedENV {
 		RetrieveENVFile()
 	}
@@ -65,16 +63,16 @@ func ConnectPostgres() {
 		host, port, user, password, dbname)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	defer db.Close()
 	err = db.Ping()
 	if err != nil {
-		panic(err)
+		log.Fatal("Could not connect to Postgres:", err)
 	}
+	return db
 }
 
-func ConnectMongoDB() {
+func ConnectMongoDB() *mongo.Client {
 	if !openedENV {
 		RetrieveENVFile()
 	}
@@ -87,5 +85,5 @@ func ConnectMongoDB() {
 	if err != nil {
 		log.Fatal("Could not connect to MongoDB:", err)
 	}
-	fmt.Println("Connected to MongoDB!")
+	return client
 }

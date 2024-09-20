@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	api "github.com/kahshiuhtang/astrid-fs/internal/api"
+	"github.com/kahshiuhtang/astrid-fs/internal/util"
 )
 
 // Middleware to log each request
@@ -24,6 +25,9 @@ func main() {
 	// Add logging middleware
 	router.Use(loggingMiddleware)
 	api.SetupDateDigestRoutes(router)
+
+	util.ConnectPostgres()
+	util.ConnectMongoDB()
 	// Start the server
 	port := ":6789"
 	fmt.Printf("Server is running on port %s\n", port)

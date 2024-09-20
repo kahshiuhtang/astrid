@@ -19,7 +19,8 @@ export default function HomeNavbarAST() {
                     <div className="hidden md:flex space-x-8">
                         <Link href="/">Home</Link>
                         <Link href="/api">APIs</Link>
-                        <Link href="/data">Data Sources</Link>
+                        <Link href="/data">Data</Link>
+                        <Link href="/sources">Sources</Link>
                         <Link href="/permissions">Permissions</Link>
                         <Link href="/services">Services</Link>
                     </div>

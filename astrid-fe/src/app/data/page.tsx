@@ -1,3 +1,9 @@
+import SQLQueryEditor from "@/app/data/sqlQueryEditor";
+
 export default function DataPage() {
-    return <div></div>;
+    return (
+        <div>
+            <SQLQueryEditor />
+        </div>
+    );
 }

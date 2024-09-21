@@ -3,7 +3,7 @@ export interface SQLQuery{
   rows: any[]
 }
 export interface NoSQLQuery{
-  data: any
+  results: any[]
 }
 export const isSQLQuery = (result: QueryResult): result is SQLQuery => {
   return !!result && 'columns' in result && 'rows' in result;

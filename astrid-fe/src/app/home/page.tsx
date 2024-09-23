@@ -1,3 +1,9 @@
-export default function HomePageAST(){
-    return <div></div>
+import Dashboard from "@/app/home/dashboard";
+
+export default function HomePageAST() {
+    return (
+        <>
+            <Dashboard />
+        </>
+    );
 }

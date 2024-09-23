@@ -17,12 +17,12 @@ export default function HomeNavbarAST() {
                         <Link href="/">Astrid</Link>
                     </div>
                     <div className="hidden md:flex space-x-8">
-                        <Link href="/">Home</Link>
-                        <Link href="/api">APIs</Link>
-                        <Link href="/data">Data</Link>
-                        <Link href="/sources">Sources</Link>
-                        <Link href="/permissions">Permissions</Link>
-                        <Link href="/services">Services</Link>
+                        <Link href="/home">Home</Link>
+                        <Link href="/home/api">APIs</Link>
+                        <Link href="/home/data">Data</Link>
+                        <Link href="/home/sources">Sources</Link>
+                        <Link href="/home/permissions">Permissions</Link>
+                        <Link href="/home/services">Services</Link>
                     </div>
 
                     {/* User Dropdown */}

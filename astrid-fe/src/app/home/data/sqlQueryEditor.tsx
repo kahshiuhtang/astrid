@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { QueryResult, isSQLQuery } from "@/app/data/query";
+import { QueryResult, isSQLQuery } from "@/app/home/data/query";
 var dataSource: string[] = ["Mongo1", "Mongo2", "Postgres1"];
 export default function SQLQueryEditor() {
     const [query, setQuery] = useState("");

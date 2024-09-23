@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
-import { QueryResult, isNoSQLQuery } from '@/app/data/query'
+import { QueryResult, isNoSQLQuery } from '@/app/home/data/query'
 
 const RecursiveDisplay = ({ data }: { data: any }) => {
   if (typeof data !== 'object' || data === null) {

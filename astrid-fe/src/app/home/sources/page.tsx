@@ -1,7 +1,7 @@
 "use client";
 
-import CreateDataSourceCardAST from "@/app/sources/createDataSource";
-import DataSourceTableAST from "@/app/sources/dataSourceTable";
+import CreateDataSourceCardAST from "@/app/home/sources/createDataSource";
+import DataSourceTableAST from "@/app/home/sources/dataSourceTable";
 
 export default function SourcePageAST() {
     return (

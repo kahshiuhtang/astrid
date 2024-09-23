@@ -9,10 +9,10 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import MetricsDialogAST from "@/app/sources/[dialogs]/metricsDialog";
-import LogsDialogAST from "@/app/sources/[dialogs]/logsDialog";
-import RolesDialogAST from "@/app/sources/[dialogs]/rolesDialog";
-import ConfigureDialogAST from "@/app/sources/[dialogs]/configureDialog";
+import MetricsDialogAST from "@/app/home/sources/[dialogs]/metricsDialog";
+import LogsDialogAST from "@/app/home/sources/[dialogs]/logsDialog";
+import RolesDialogAST from "@/app/home/sources/[dialogs]/rolesDialog";
+import ConfigureDialogAST from "@/app/home/sources/[dialogs]/configureDialog";
 interface DataSourceType {
     id: string;
     name: string;

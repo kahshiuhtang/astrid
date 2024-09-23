@@ -1,4 +1,4 @@
-import SQLQueryEditor from "@/app/data/sqlQueryEditor";
+import SQLQueryEditor from "@/app/home/data/sqlQueryEditor";
 
 export default function DataPage() {
     return (

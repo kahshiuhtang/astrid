@@ -60,21 +60,8 @@ type PGColumn struct {
 	varType string
 }
 
-func verifyTable(conn *pgx.Conn, tableName string, columns []PGColumn) error {
-	ensureTableSQL := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id SERIAL PRIMARY KEY,
-		file_name VARCHAR(255) NOT NULL,
-		file_size BIGINT,
-		mime_type VARCHAR(255),
-		storage_path VARCHAR(512),
-		checksum VARCHAR(64),
-		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		owner_id UUID,
-		metadata JSONB
-	);
-	`, tableName)
-	_, err := conn.Exec(context.Background(), ensureTableSQL)
+func verifyTable(conn *pgx.Conn, tableName string, createString string, columns []PGColumn) error {
+	_, err := conn.Exec(context.Background(), createString)
 	if err != nil {
 		return fmt.Errorf("error ensuring table: %w", err)
 	}
@@ -107,18 +94,10 @@ func verifyTableColumns(conn *pgx.Conn, tableName string, column PGColumn) error
 	return nil
 }
 func VerifyTablesStructure() {
-	columns := []PGColumn{
-		{"file_name", "VARCHAR(255)"},
-		{"file_size", "BIGINT"},
-		{"mime_type", "VARCHAR(255)"},
-		{"storage_path", "VARCHAR(512)"},
-		{"checksum", "VARCHAR(64)"},
-		{"created_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
-		{"owner_id", "VARCHAR(64)"}, // or VARCHAR if you prefer string
-		{"metadata", "JSONB"},       // store additional metadata in JSON format
-	}
 	conn := ConnectPostgres()
-	verifyTable(conn, "file_metadata", columns)
+	for tableName, createStmt := range createTableStatements {
+		verifyTable(conn, tableName, createStmt, tableStructsMap[tableName])
+	}
 }
 func ConnectPostgres() *pgx.Conn {
 	if !openedENV {

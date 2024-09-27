@@ -2,12 +2,12 @@ package util
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"log"
 	"os"
 	"strconv"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -54,22 +54,68 @@ func ConvertStringToInt(str string) int {
 	}
 	return num
 }
-func ConnectPostgres() *sql.DB {
+
+type PGColumn struct {
+	name    string
+	varType string
+}
+
+func verifyTable(conn *pgx.Conn, tableName string, columns []PGColumn) error {
+	ensureTableSQL := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(255) NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);
+	`, tableName)
+	_, err := conn.Exec(context.Background(), ensureTableSQL)
+	if err != nil {
+		return fmt.Errorf("error ensuring table: %w", err)
+	}
+	for _, col := range columns {
+		err = verifyTableColumns(conn, tableName, col)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+func verifyTableColumns(conn *pgx.Conn, tableName string, column PGColumn) error {
+	ensureColumnSQL := `
+	DO
+	$$
+	BEGIN
+	   IF NOT EXISTS (
+	      SELECT 1 FROM information_schema.columns 
+	      WHERE table_name = $1 AND column_name = $2
+	   ) THEN
+	      ALTER TABLE $1 ADD COLUMN $2 $3;
+	   END IF;
+	END
+	$$;
+	`
+	_, err := conn.Exec(context.Background(), ensureColumnSQL, tableName, column.name, column.varType)
+	if err != nil {
+		return fmt.Errorf("error ensuring column: %w", err)
+	}
+	return nil
+}
+func verifyTablesStructure() {
+
+}
+func ConnectPostgres() *pgx.Conn {
 	if !openedENV {
 		RetrieveENVFile()
 	}
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
-	db, err := sql.Open("postgres", psqlInfo)
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s", user, password, host, port, dbname)
+
+	// Connect to PostgreSQL using pgx
+	conn, err := pgx.Connect(context.Background(), connStr)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Unable to connect to database: %v", err)
 	}
-	err = db.Ping()
-	if err != nil {
-		log.Fatal("Could not connect to Postgres:", err)
-	}
-	return db
+
+	return conn
 }
 
 func ConnectMongoDB() *mongo.Client {

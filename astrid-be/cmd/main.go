@@ -24,10 +24,9 @@ func main() {
 
 	// Add logging middleware
 	router.Use(loggingMiddleware)
-	api.SetupDateDigestRoutes(router)
+	api.SetupDataDigestRoutes(router)
 
 	util.ConnectPostgres()
-	util.ConnectMongoDB()
 	// Start the server
 	port := ":6789"
 	fmt.Printf("Server is running on port %s\n", port)

@@ -11,11 +11,9 @@ import (
 	data "github.com/kahshiuhtang/astrid-fs/internal/data"
 )
 
-func SetupDateDigestRoutes(router *mux.Router) {
-	router.HandleFunc("/files/upload", storeFile).Methods("POST")
+func SetupDataDigestRoutes(router *mux.Router) {
 	router.HandleFunc("/objects/upload", storeObject).Methods("POST")
 	router.HandleFunc("/objects/{objectId}", getObject).Methods("GET")
-	router.HandleFunc("/db/upload", storeDBData).Methods("POST")
 }
 
 func storeObject(w http.ResponseWriter, r *http.Request) {
@@ -66,10 +64,4 @@ func getObject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Printf("Successfully served file: %s", objectId)
-}
-func storeFile(w http.ResponseWriter, r *http.Request) {
-
-}
-func storeDBData(w http.ResponseWriter, r *http.Request) {
-
 }

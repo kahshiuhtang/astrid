@@ -27,6 +27,7 @@ func main() {
 	api.SetupDataDigestRoutes(router)
 
 	util.ConnectPostgres()
+	util.VerifyTablesStructure()
 	// Start the server
 	port := ":6789"
 	fmt.Printf("Server is running on port %s\n", port)

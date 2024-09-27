@@ -64,8 +64,14 @@ func verifyTable(conn *pgx.Conn, tableName string, columns []PGColumn) error {
 	ensureTableSQL := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id SERIAL PRIMARY KEY,
-		name VARCHAR(255) NOT NULL,
-		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		file_name VARCHAR(255) NOT NULL,
+		file_size BIGINT,
+		mime_type VARCHAR(255),
+		storage_path VARCHAR(512),
+		checksum VARCHAR(64),
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		owner_id UUID,
+		metadata JSONB
 	);
 	`, tableName)
 	_, err := conn.Exec(context.Background(), ensureTableSQL)
@@ -100,16 +106,25 @@ func verifyTableColumns(conn *pgx.Conn, tableName string, column PGColumn) error
 	}
 	return nil
 }
-func verifyTablesStructure() {
-
+func VerifyTablesStructure() {
+	columns := []PGColumn{
+		{"file_name", "VARCHAR(255)"},
+		{"file_size", "BIGINT"},
+		{"mime_type", "VARCHAR(255)"},
+		{"storage_path", "VARCHAR(512)"},
+		{"checksum", "VARCHAR(64)"},
+		{"created_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
+		{"owner_id", "VARCHAR(64)"}, // or VARCHAR if you prefer string
+		{"metadata", "JSONB"},       // store additional metadata in JSON format
+	}
+	conn := ConnectPostgres()
+	verifyTable(conn, "file_metadata", columns)
 }
 func ConnectPostgres() *pgx.Conn {
 	if !openedENV {
 		RetrieveENVFile()
 	}
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s", user, password, host, port, dbname)
-
-	// Connect to PostgreSQL using pgx
 	conn, err := pgx.Connect(context.Background(), connStr)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v", err)

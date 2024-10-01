@@ -1,12 +1,10 @@
 # Astrid
 
-Secure search for a combination of data structures
+File storage and syncing service
 
 ## Core Features
 
--   [ ] Feature 1: Search Engine built on top a combination of object storage of files
--   [ ] Feature 2: Easy setup of permissions and security features
--   [ ] Feature 3: Automatic syncing of files between computers
--   [ ] Feature 4: Realtime UI view of data object locations + usage
-
-#### Bugs
+-   [ ] Feature 1: Store files
+-   [ ] Feature 2: Sync files between computers
+-   [ ] Feature 3: Share files between team members
+-   [ ] Feature 4: Create different permission levels for different files

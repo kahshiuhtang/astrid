@@ -1,7 +1,7 @@
 package util
 
 var tableStructsMap = map[string][]PGColumn{
-	"file_metadata": []PGColumn{
+	"file_metadata": {
 		{"id", "SERIAL PRIMARY KEY"},
 		{"file_name", "VARCHAR(255) NOT NULL"},
 		{"file_size", "BIGINT"},
@@ -13,13 +13,13 @@ var tableStructsMap = map[string][]PGColumn{
 		{"metadata", "JSONB"},
 	},
 
-	"file_tags": []PGColumn{
+	"file_tags": {
 		{"id", "SERIAL PRIMARY KEY"},
 		{"file_id", "INT REFERENCES file_metadata(id) ON DELETE CASCADE"},
 		{"tag", "VARCHAR(255) NOT NULL"},
 	},
 
-	"file_access_log": []PGColumn{
+	"file_access_log": {
 		{"id", "SERIAL PRIMARY KEY"},
 		{"file_id", "INT REFERENCES file_metadata(id) ON DELETE CASCADE"},
 		{"accessed_by", "UUID"},
@@ -27,7 +27,7 @@ var tableStructsMap = map[string][]PGColumn{
 		{"accessed_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
 	},
 
-	"storage_nodes": []PGColumn{
+	"storage_nodes": {
 		{"id", "SERIAL PRIMARY KEY"},
 		{"node_name", "VARCHAR(255) NOT NULL"},
 		{"node_ip", "VARCHAR(255) NOT NULL"},
@@ -37,7 +37,7 @@ var tableStructsMap = map[string][]PGColumn{
 		{"last_checked", "TIMESTAMP"},
 	},
 
-	"file_versions": []PGColumn{
+	"file_versions": {
 		{"id", "SERIAL PRIMARY KEY"},
 		{"file_id", "INT REFERENCES file_metadata(id) ON DELETE CASCADE"},
 		{"version_number", "INT"},

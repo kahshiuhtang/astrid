@@ -18,11 +18,9 @@ export default function HomeNavbarAST() {
                     </div>
                     <div className="hidden md:flex space-x-8">
                         <Link href="/home">Home</Link>
-                        <Link href="/home/api">APIs</Link>
-                        <Link href="/home/data">Data</Link>
+                        <Link href="/home/api">API</Link>
                         <Link href="/home/sources">Sources</Link>
                         <Link href="/home/permissions">Permissions</Link>
-                        <Link href="/home/services">Services</Link>
                     </div>
 
                     {/* User Dropdown */}

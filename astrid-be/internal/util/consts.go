@@ -133,17 +133,17 @@ var createTableStatements = map[string]string{
 		id SERIAL PRIMARY KEY,
 		team_id INT REFERENCES teams(id) ON DELETE CASCADE,
 		user_id INT REFERENCES users(id) ON DELETE CASCADE,
-		role VARCHAR(50),  -- e.g., "admin", "member"
+		role VARCHAR(50),
 		joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		UNIQUE(team_id, user_id)  -- Ensure a user can only join a team once
+		UNIQUE(team_id, user_id)
 	);
 	`,
 	"folders": `
 	CREATE TABLE IF NOT EXISTS folders (
 		id SERIAL PRIMARY KEY,
 		folder_name VARCHAR(255) NOT NULL,
-		parent_folder_id INT REFERENCES folders(id) ON DELETE CASCADE, -- Self-referencing foreign key for folder hierarchy
-		team_id INT REFERENCES teams(id) ON DELETE CASCADE, -- Reference to the team the folder belongs to
+		parent_folder_id INT REFERENCES folders(id) ON DELETE CASCADE,
+		team_id INT REFERENCES teams(id) ON DELETE CASCADE,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		owner_id UUID NOT NULL, -- Who created/owns the folder
 		metadata JSONB
@@ -152,10 +152,10 @@ var createTableStatements = map[string]string{
 	"file_folder_association": `
 	CREATE TABLE IF NOT EXISTS file_folder_association (
 		id SERIAL PRIMARY KEY,
-		folder_id INT REFERENCES folders(id) ON DELETE CASCADE, -- Reference to the folder the file is in
-		file_id INT REFERENCES file_metadata(id) ON DELETE CASCADE, -- Reference to the file from file_metadata table
+		folder_id INT REFERENCES folders(id) ON DELETE CASCADE, 
+		file_id INT REFERENCES file_metadata(id) ON DELETE CASCADE, 
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		UNIQUE(folder_id, file_id) -- Ensures a file can only be in one folder at a time
+		UNIQUE(folder_id, file_id)
 	);
 	`,
 }

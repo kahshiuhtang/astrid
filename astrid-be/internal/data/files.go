@@ -106,7 +106,7 @@ func UploadToObjectStoreSW(file multipart.File, fileHeader *multipart.FileHeader
 		return upResp, nil
 	}
 	upResp.Location = assignResp.Fid
-	StoreFileMetadata(FileMetadata{
+	StoreFileMetadataDB(util.FileMetadata{
 		FileName:    fileHeader.Filename,
 		FileSize:    upResp.Size,
 		StoragePath: "/" + fileHeader.Filename,

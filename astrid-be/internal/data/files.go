@@ -2,11 +2,17 @@ package data
 
 import (
 	"bytes"
+	"crypto/md5"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
+	"time"
+
+	"github.com/kahshiuhtang/astrid-fs/internal/util"
 )
 
 type AssignResponse struct {
@@ -17,9 +23,10 @@ type AssignResponse struct {
 }
 
 type UploadResponse struct {
-	Name string `json:"name"`
-	Size int64  `json:"size"`
-	ETag string `json:"eTag"`
+	Name     string `json:"name"`
+	Size     int64  `json:"size"`
+	ETag     string `json:"eTag"`
+	Location string `json:"location"`
 }
 
 func GetFileAssignment() (AssignResponse, error) {
@@ -38,7 +45,6 @@ func GetFileAssignment() (AssignResponse, error) {
 	if err != nil {
 		return assignResp, fmt.Errorf("error decoding response: %v", err)
 	}
-
 	return assignResp, nil
 }
 
@@ -99,10 +105,40 @@ func UploadToObjectStoreSW(file multipart.File, fileHeader *multipart.FileHeader
 		fmt.Println("Error sending request:", err)
 		return upResp, nil
 	}
+	upResp.Location = assignResp.Fid
+	StoreFileMetadata(FileMetadata{
+		FileName:    fileHeader.Filename,
+		FileSize:    upResp.Size,
+		StoragePath: "/" + fileHeader.Filename,
+		CreatedAt:   time.Now(),
+		MimeType:    getFileMimeType(file),
+		OwnerID:     util.GenerateUUID(),
+		Checksum:    getFileChecksum(file, "sha256"),
+		Metadata:    "{}",
+	})
 	fmt.Println(upResp)
 	return upResp, nil
 }
 
 func RetrieveObjectStoreSW() {
 
+}
+
+func getFileMimeType(file multipart.File) string {
+	buffer := make([]byte, 512)
+	file.Read(buffer)
+	return http.DetectContentType(buffer)
+}
+func getFileChecksum(file multipart.File, algorithm string) string {
+	switch algorithm {
+	case "sha256":
+		h := sha256.New()
+		io.Copy(h, file)
+		return hex.EncodeToString(h.Sum(nil))
+	case "md5":
+		h := md5.New()
+		io.Copy(h, file)
+		return hex.EncodeToString(h.Sum(nil))
+	}
+	return ""
 }

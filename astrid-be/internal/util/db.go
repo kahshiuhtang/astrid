@@ -33,7 +33,7 @@ var (
 	mongoURI = ""
 )
 
-func RetrieveENVFile() {
+func RetrieveEnvFile() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error loading .env file")
@@ -101,7 +101,7 @@ func VerifyTablesStructure() {
 }
 func ConnectPostgres() *pgx.Conn {
 	if !openedENV {
-		RetrieveENVFile()
+		RetrieveEnvFile()
 	}
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s", user, password, host, port, dbname)
 	conn, err := pgx.Connect(context.Background(), connStr)
@@ -114,7 +114,7 @@ func ConnectPostgres() *pgx.Conn {
 
 func ConnectMongoDB() *mongo.Client {
 	if !openedENV {
-		RetrieveENVFile()
+		RetrieveEnvFile()
 	}
 	clientOptions := options.Client().ApplyURI(mongoURI)
 	client, err := mongo.Connect(context.TODO(), clientOptions)

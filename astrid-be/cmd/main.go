@@ -18,17 +18,14 @@ func loggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// Set up routes and middleware
 func main() {
 	router := mux.NewRouter()
 
-	// Add logging middleware
 	router.Use(loggingMiddleware)
 	api.SetupDataDigestRoutes(router)
 
 	util.ConnectPostgres()
 	util.VerifyTablesStructure()
-	// Start the server
 	port := ":6789"
 	fmt.Printf("Server is running on port %s\n", port)
 	log.Fatal(http.ListenAndServe(port, router))

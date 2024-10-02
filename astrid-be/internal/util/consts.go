@@ -1,5 +1,6 @@
 package util
 
+// TODO: Some columns have unique constraint... need to add it somehow
 var tableStructsMap = map[string][]PGColumn{
 	"file_metadata": {
 		{"id", "SERIAL PRIMARY KEY"},
@@ -27,16 +28,6 @@ var tableStructsMap = map[string][]PGColumn{
 		{"accessed_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
 	},
 
-	"storage_nodes": {
-		{"id", "SERIAL PRIMARY KEY"},
-		{"node_name", "VARCHAR(255) NOT NULL"},
-		{"node_ip", "VARCHAR(255) NOT NULL"},
-		{"region", "VARCHAR(255)"},
-		{"storage_capacity", "BIGINT"},
-		{"current_usage", "BIGINT"},
-		{"last_checked", "TIMESTAMP"},
-	},
-
 	"file_versions": {
 		{"id", "SERIAL PRIMARY KEY"},
 		{"file_id", "INT REFERENCES file_metadata(id) ON DELETE CASCADE"},
@@ -44,6 +35,43 @@ var tableStructsMap = map[string][]PGColumn{
 		{"created_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
 		{"checksum", "VARCHAR(64)"},
 		{"storage_path", "VARCHAR(512)"},
+	},
+
+	"users": {
+		{"id", "SERIAL PRIMARY KEY"},
+		{"username", "VARCHAR(50) UNIQUE NOT NULL"},
+		{"email", "VARCHAR(100) UNIQUE NOT NULL"},
+		{"password_hash", "VARCHAR(255) NOT NULL"},
+		{"created_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
+		{"updated_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
+	},
+	"teams": {
+		{"id", "SERIAL PRIMARY KEY"},
+		{"name", "VARCHAR(100) NOT NULL"},
+		{"created_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
+		{"updated_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
+	},
+	"team_members": {
+		{"id", "SERIAL PRIMARY KEY"},
+		{"team_id", "INT REFERENCES teams(id) ON DELETE CASCADE"},
+		{"user_id", "INT REFERENCES users(id) ON DELETE CASCADE"},
+		{"role", "VARCHAR(50)"},
+		{"joined_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
+	},
+	"folders": {
+		{"id", "SERIAL PRIMARY KEY"},
+		{"folder_name", "VARCHAR(255) NOT NULL"},
+		{"parent_folder_id", "INT REFERENCES folders(id) ON DELETE CASCADE"},
+		{"team_id", "INT REFERENCES teams(id) ON DELETE CASCADE"},
+		{"created_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
+		{"owner_id", "UUID NOT NULL"},
+		{"metadata", "JSONB"},
+	},
+	"file_folder_association": {
+		{"id", "SERIAL PRIMARY KEY"},
+		{"folder_id", "INT REFERENCES folders(id) ON DELETE CASCADE"},
+		{"file_id", "INT REFERENCES file_metadata(id) ON DELETE CASCADE"},
+		{"created_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"},
 	},
 }
 var createTableStatements = map[string]string{
@@ -59,7 +87,6 @@ var createTableStatements = map[string]string{
 		owner_id UUID NOT NULL,
 		metadata JSONB
 	);`,
-
 	"file_tags": `
 	CREATE TABLE IF NOT EXISTS file_tags (
 		id SERIAL PRIMARY KEY,
@@ -75,18 +102,6 @@ var createTableStatements = map[string]string{
 		action_type VARCHAR(50),
 		accessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	);`,
-
-	"storage_nodes": `
-	CREATE TABLE IF NOT EXISTS storage_nodes (
-		id SERIAL PRIMARY KEY,
-		node_name VARCHAR(255) NOT NULL,
-		node_ip VARCHAR(255) NOT NULL,
-		region VARCHAR(255),
-		storage_capacity BIGINT,
-		current_usage BIGINT,
-		last_checked TIMESTAMP
-	);`,
-
 	"file_versions": `
 	CREATE TABLE IF NOT EXISTS file_versions (
 		id SERIAL PRIMARY KEY,
@@ -96,4 +111,51 @@ var createTableStatements = map[string]string{
 		checksum VARCHAR(64),
 		storage_path VARCHAR(512)
 	);`,
+	"users": `
+	CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		username VARCHAR(50) UNIQUE NOT NULL,
+		email VARCHAR(100) UNIQUE NOT NULL,
+		password_hash VARCHAR(255) NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);
+	`,
+	"teams": `
+	CREATE TABLE IF NOT EXISTS teams (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(100) NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	);`,
+	"team_members": `
+	CREATE TABLE IF NOT EXISTS team_members (
+		id SERIAL PRIMARY KEY,
+		team_id INT REFERENCES teams(id) ON DELETE CASCADE,
+		user_id INT REFERENCES users(id) ON DELETE CASCADE,
+		role VARCHAR(50),  -- e.g., "admin", "member"
+		joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		UNIQUE(team_id, user_id)  -- Ensure a user can only join a team once
+	);
+	`,
+	"folders": `
+	CREATE TABLE IF NOT EXISTS folders (
+		id SERIAL PRIMARY KEY,
+		folder_name VARCHAR(255) NOT NULL,
+		parent_folder_id INT REFERENCES folders(id) ON DELETE CASCADE, -- Self-referencing foreign key for folder hierarchy
+		team_id INT REFERENCES teams(id) ON DELETE CASCADE, -- Reference to the team the folder belongs to
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		owner_id UUID NOT NULL, -- Who created/owns the folder
+		metadata JSONB
+	);
+	`,
+	"file_folder_association": `
+	CREATE TABLE IF NOT EXISTS file_folder_association (
+		id SERIAL PRIMARY KEY,
+		folder_id INT REFERENCES folders(id) ON DELETE CASCADE, -- Reference to the folder the file is in
+		file_id INT REFERENCES file_metadata(id) ON DELETE CASCADE, -- Reference to the file from file_metadata table
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		UNIQUE(folder_id, file_id) -- Ensures a file can only be in one folder at a time
+	);
+	`,
 }

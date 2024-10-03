@@ -2,6 +2,7 @@ package data
 
 import (
 	"bytes"
+	"context"
 	"crypto/md5"
 	"crypto/sha256"
 	"encoding/hex"
@@ -120,8 +121,54 @@ func UploadToObjectStoreSW(file multipart.File, fileHeader *multipart.FileHeader
 	return upResp, nil
 }
 
-func RetrieveObjectStoreSW() {
+func CreateFolderDB(folderName string, parentFodlerId *int, ownerId string, metadata string) (int, error) {
+	conn := util.ConnectPostgres()
+	query := `
+        INSERT INTO folders (folder_name, parent_folder_id, owner_id, metadata, created_at)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id;
+    `
+	var folderID int
+	createdAt := time.Now()
 
+	err := conn.QueryRow(context.Background(), query, folderName, parentFodlerId, ownerId, metadata, createdAt).Scan(&folderID)
+	if err != nil {
+		return 0, err
+	}
+
+	return folderID, nil
+}
+
+func AddFileToFolder(folderId, fileId int) (int, error) {
+	conn := util.ConnectPostgres()
+	query := `
+        INSERT INTO file_folder_association (folder_id, file_id, created_at)
+        VALUES ($1, $2, $3)
+        RETURNING id;
+    `
+	var id int
+	createdAt := time.Now()
+
+	err := conn.QueryRow(context.Background(), query, folderId, fileId, createdAt).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
+
+func RemoveFileFromFolder(folderId, fileId int) error {
+	conn := util.ConnectPostgres()
+	query := `
+        DELETE FROM file_folder_association
+        WHERE folder_id = $1 AND file_id = $2;
+    `
+	_, err := conn.Exec(context.Background(), query, folderId, fileId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func getFileMimeType(file multipart.File) string {

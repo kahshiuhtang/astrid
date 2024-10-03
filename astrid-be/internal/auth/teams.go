@@ -84,3 +84,20 @@ func PullTeamFolderDB(teamId int, folderId int) ([]util.FileMetadata, error) {
 
 	return files, nil
 }
+func CreateFolderInTeamDB(folderName string, parentFolderID *int, teamId int, ownerId string, metadata string) (int, error) {
+	conn := util.ConnectPostgres()
+	query := `
+        INSERT INTO folders (folder_name, parent_folder_id, team_id, owner_id, metadata, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id;
+    `
+	var folderID int
+	createdAt := time.Now()
+
+	err := conn.QueryRow(context.Background(), query, folderName, parentFolderID, teamId, ownerId, metadata, createdAt).Scan(&folderID)
+	if err != nil {
+		return 0, err
+	}
+
+	return folderID, nil
+}

@@ -39,7 +39,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <div className="w-64 bg-secondary p-4 hidden md:block">
                 <Link href="/" className="flex items-center mb-6">
                     <Cloud className="h-6 w-6 mr-2" />
-                    <span className="text-lg font-semibold">CloudDrive</span>
+                    <span className="text-lg font-semibold">Astrid FS</span>
                 </Link>
                 <nav className="space-y-2">
                     {navItems.map((item) => (
